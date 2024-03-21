@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db.models import Count
-from django.db.models.base import Model as Model
 from django.db.models.functions import Now
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import (
