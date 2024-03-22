@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.http import Http404
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models.functions import Now
@@ -124,9 +125,8 @@ class PostUpdateDeleteMixin:
     pk_url_kwarg = 'post_id'
 
     def dispatch(self, request, *args, **kwargs):
-        try:
-            get_object_or_404(Post, pk=kwargs['post_id'], author=request.user)
-        except TypeError:
+        instance = get_object_or_404(Post, pk=kwargs['post_id'])
+        if instance.author != request.user:
             post_id = self.kwargs['post_id']
             return redirect('blog:post_detail', post_id=post_id)
         return super().dispatch(request, *args, **kwargs)
@@ -184,11 +184,10 @@ class CommentUpdateDeleteMixin:
     pk_url_kwarg = 'comment_id'
 
     def dispatch(self, request, *args, **kwargs):
-        try:
-            get_object_or_404(
-                Comment, pk=kwargs['comment_id'], author=request.user
-            )
-        except TypeError:
+        instance = get_object_or_404(
+            Comment, pk=kwargs['comment_id']
+        )
+        if request.user != instance.author:
             post_id = self.kwargs['post_id']
             return redirect('blog:post_detail', post_id=post_id)
         return super().dispatch(request, *args, **kwargs)
