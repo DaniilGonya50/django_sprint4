@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.http import Http404
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models.functions import Now
