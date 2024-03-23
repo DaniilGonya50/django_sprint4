@@ -4,7 +4,6 @@ from dateutil.parser import parse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import (
