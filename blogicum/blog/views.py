@@ -1,5 +1,4 @@
 from datetime import datetime
-from dateutil.parser import parse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -23,10 +22,7 @@ class IndexListView(ListView):
     template_name = 'blog/index.html'
     model = Post
     paginate_by = PAGE_COUNT
-    posts = get_post(
-        Post.objects
-    )
-    queryset = get_comments(posts)
+    queryset = get_comments(get_post(Post.objects))
 
 
 def post_detail(request, post_id):
@@ -35,9 +31,10 @@ def post_detail(request, post_id):
     if (post.author != request.user
             and (not post.is_published
                  or not post.category.is_published
-                 or parse(str(post.pub_date)).timestamp()
-                 >= datetime.now().timestamp())):
-        raise Http404
+                 or str(post.pub_date)
+                 >= str(datetime.now()))):
+        raise Http404('Пост или категория сняты с публикации,'
+                      'либо пост ещё не опубликован.')
     form = CommentForm()
     comments = (
         post.comments.all()
@@ -60,7 +57,7 @@ def category_posts(request, category_slug):
     posts = get_post(
         category.posts
     )
-    page_obj = paginate(request, posts)
+    page_obj = paginate(posts, request.GET.get('page'))
     context = {
         'category': category,
         'page_obj': page_obj,
@@ -78,7 +75,7 @@ def profile(request, username):
         posts_profile = get_comments(
             profile.posts
         )
-    page_obj = paginate(request, posts_profile)
+    page_obj = paginate(posts_profile, request.GET.get('page'))
     context = {
         'profile': profile,
         'page_obj': page_obj,

@@ -19,8 +19,7 @@ def get_comments(posts):
         comment_count=Count('comments')).order_by('-pub_date')
 
 
-def paginate(request, posts):
+def paginate(posts, page_number):
     paginator = Paginator(posts, PAGE_COUNT)
-    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return page_obj

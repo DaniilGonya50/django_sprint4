@@ -76,11 +76,6 @@ class Post(PublishedModel):
     def __str__(self):
         return self.title
 
-    def get_absolute_url(self):
-        post_id = self.kwargs['post_id']
-        return reverse('blog:post_detail',
-                       kwargs={'pk': post_id})
-
 
 class Comment(models.Model):
     text = models.TextField('Текст комментария')
