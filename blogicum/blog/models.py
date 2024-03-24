@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.urls import reverse
 
 from core.models import PublishedModel
 from .constant import MAX_LENGTH
