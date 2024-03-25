@@ -31,8 +31,8 @@ def post_detail(request, post_id):
     if (post.author != request.user
             and (not post.is_published
                  or not post.category.is_published
-                 or str(post.pub_date)
-                 >= str(datetime.now()))):
+                 or post.pub_date.timestamp()
+                 >= datetime.now().timestamp())):
         raise Http404('Пост или категория сняты с публикации,'
                       'либо пост ещё не опубликован.')
     form = CommentForm()
@@ -54,9 +54,7 @@ def category_posts(request, category_slug):
         slug=category_slug,
         is_published=True,
     )
-    posts = get_post(
-        category.posts
-    )
+    posts = get_post(category.posts)
     page_obj = paginate(posts, request.GET.get('page'))
     context = {
         'category': category,
@@ -72,9 +70,7 @@ def profile(request, username):
         get_post(profile.posts)
     )
     if profile == request.user:
-        posts_profile = get_comments(
-            profile.posts
-        )
+        posts_profile = get_comments(profile.posts)
     page_obj = paginate(posts_profile, request.GET.get('page'))
     context = {
         'profile': profile,
